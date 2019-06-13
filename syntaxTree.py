@@ -5,7 +5,7 @@ from random import randint
 
 class Node():
 
-    def __init__(self, parent, key, hasLeft, hasRight):
+    def __init__(self, parent, text, hasLeft, hasRight):
         self.parent = parent
         if parent != None:
             if parent.hasRight and parent.right == None:
@@ -15,11 +15,15 @@ class Node():
             else:
                 print("this shouldn't happen")
 
-        self.key = key
+        self.text = text
         self.hasLeft = hasLeft
         self.hasRight = hasRight
 
-    key = ""
+    def addSubText(self, subText):
+        self.subText = subText
+
+    text = ""
+    subText = None
     value = 0
     left = None
     right = None
@@ -64,13 +68,13 @@ class Tree():
         pygame.display.set_caption("Tree")
         pygame.init()
 
-    def setRoot(self, key, left, right):
-        self.root = Node(None, key, left, right)
+    def setRoot(self, text, left, right):
+        self.root = Node(None, text, left, right)
         return self.root
 
-    def addNode(self, key, left, right):
+    def addNode(self, text, left, right):
         nextNode = _getNext(self.root)
-        node = Node(nextNode, key, left, right)
+        node = Node(nextNode, text, left, right)
         self.complete = _getNext(self.root) == None
         self.nodes.append(node)
         return node
@@ -127,14 +131,28 @@ class Tree():
             pygame.draw.line(self.screen, [0,0,0], (node.x, node.y), (node.parent.x, node.parent.y), 2)
 
         myfont = pygame.font.SysFont("monospace", 15)
-        label = myfont.render(str(node.key), 1, (0,0,0))
-        self.screen.blit(label, (node.x + 10, node.y - 9))
+        title = myfont.render(node.text, 1, (0,0,0))
+
+        if node.subText == None:
+            width = 10 + myfont.size(node.text)[0]
+            height = myfont.size(node.text)[1]
+            textSurface = pygame.Surface((width, height))
+            textSurface.fill([255,255,255])
+        else:
+            width = 10 + max(myfont.size(node.text)[0], myfont.size(node.subText)[0])
+            height = 15 + myfont.size(node.subText)[1]
+            textSurface = pygame.Surface((width, height))
+            textSurface.fill([255,255,255])
+            sub = myfont.render(node.subText, 1, (0,0,0))
+            textSurface.blit(sub, ((width - myfont.size(node.subText)[0])/2, 15))
+
+        textSurface.blit(title, ((width - myfont.size(node.text)[0])/2, 0))
 
         if node.left != None:
             self._drawTree(node.left)
         if node.right != None:
             self._drawTree(node.right)
-        pygame.draw.circle(self.screen, [20,50,150], (node.x, node.y), 7)
+        # pygame.draw.circle(self.screen, [20,50,150], (node.x, node.y), 7)
 
         if node.hasLeft == False:
             label = myfont.render("x", 1, (0,0,0))
@@ -143,6 +161,8 @@ class Tree():
         if node.hasRight == False:
             label = myfont.render("x", 1, (0,0,0))
             self.screen.blit(label, (node.x + 10, node.y + 2))
+
+        self.screen.blit(textSurface, (node.x - width/2, node.y - height/2 - 5))
 
     def loop(self):
         self.frameCount += 1
@@ -166,15 +186,15 @@ class Tree():
 
         return done
 
-    def quit(self):
-        pygame.quit()
+def quit(self):
+    pygame.quit()
 
 
 if __name__ == "__main__":
     tree = Tree()
-    tree.setRoot("R", True, True)
-    tree.addNode("A", False, False)
-    tree.addNode("B", False, False)
+    tree.setRoot("The Root", True, True)
+    tree.addNode("A node", False, False).addSubText("The Cat")
+    tree.addNode("B node", False, False)
     tree.draw()
 
     #----------------------Main Loop----------------------#
