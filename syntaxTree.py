@@ -5,6 +5,15 @@ from random import randint
 
 class Node():
 
+    parent = None
+    text = ""
+    sub = None
+    value = 0
+    left = None
+    right = None
+    x = 0
+    y = 0
+
     def __init__(self, parent, text, hasLeft, hasRight):
         self.parent = parent
         if parent != None:
@@ -21,14 +30,6 @@ class Node():
 
     def subText(self, sub):
         self.sub = sub
-
-    text = ""
-    sub = None
-    value = 0
-    left = None
-    right = None
-    x = 0
-    y = 0
 
 def _getNext(node):
     if node.hasRight:
@@ -51,8 +52,17 @@ def _getNext(node):
 
     return None
 
+inited = False
+def initPygame(self):
+    global inited
+    if not inited:
+        self.screen = pygame.display.set_mode((self.xSize, self.ySize), pygame.RESIZABLE)
+        pygame.display.set_caption("Tree")
+        pygame.init()
+        inited = True
+
+
 class Tree():
-    nodes = []
     complete = False
     root = None
     leaves = []
@@ -64,19 +74,29 @@ class Tree():
     frameCount = 0
 
     def __init__(self):
-        self.screen = pygame.display.set_mode((self.xSize, self.ySize), pygame.RESIZABLE)
-        pygame.display.set_caption("Tree")
-        pygame.init()
+        initPygame(self)
 
     def setRoot(self, text, left, right):
         self.root = Node(None, text, left, right)
         return self.root
 
+    def addSubTree(self, subTree):
+        nextNode = _getNext(self.root)
+        subTree.root.parent = nextNode
+        
+        if nextNode.hasRight and nextNode.right == None:
+            nextNode.right = subTree.root
+        elif nextNode.hasLeft and nextNode.left == None:
+            nextNode.left = subTree.root
+        else:
+            print("this shouldn't happen")
+
+        self.complete = _getNext(self.root) == None
+
     def addNode(self, text, left, right):
         nextNode = _getNext(self.root)
         node = Node(nextNode, text, left, right)
         self.complete = _getNext(self.root) == None
-        self.nodes.append(node)
         return node
 
     def draw(self):
