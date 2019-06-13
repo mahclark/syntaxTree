@@ -130,7 +130,8 @@ class Tree():
         if node.parent != None:
             pygame.draw.line(self.screen, [0,0,0], (node.x, node.y), (node.parent.x, node.parent.y), 2)
 
-        myfont = pygame.font.SysFont("monospace", 15)
+        fontSize = 16
+        myfont = pygame.font.Font("AvenirLTStd-Book.otf", fontSize)
         title = myfont.render(node.text, 1, (0,0,0))
 
         if node.subText == None:
@@ -140,11 +141,11 @@ class Tree():
             textSurface.fill([255,255,255])
         else:
             width = 10 + max(myfont.size(node.text)[0], myfont.size(node.subText)[0])
-            height = 15 + myfont.size(node.subText)[1]
+            height = fontSize + myfont.size(node.subText)[1]
             textSurface = pygame.Surface((width, height))
             textSurface.fill([255,255,255])
             sub = myfont.render(node.subText, 1, (0,0,0))
-            textSurface.blit(sub, ((width - myfont.size(node.subText)[0])/2, 15))
+            textSurface.blit(sub, ((width - myfont.size(node.subText)[0])/2, fontSize))
 
         textSurface.blit(title, ((width - myfont.size(node.text)[0])/2, 0))
 
@@ -162,7 +163,7 @@ class Tree():
             label = myfont.render("x", 1, (0,0,0))
             self.screen.blit(label, (node.x + 10, node.y + 2))
 
-        self.screen.blit(textSurface, (node.x - width/2, node.y - height/2 - 5))
+        self.screen.blit(textSurface, (node.x - width/2, node.y - height/2))
 
     def loop(self):
         self.frameCount += 1
@@ -193,8 +194,8 @@ def quit(self):
 if __name__ == "__main__":
     tree = Tree()
     tree.setRoot("The Root", True, True)
-    tree.addNode("A node", False, False).addSubText("The Cat")
-    tree.addNode("B node", False, False)
+    tree.addNode("A", False, False).addSubText("The Cat")
+    tree.addNode("B", False, False)
     tree.draw()
 
     #----------------------Main Loop----------------------#

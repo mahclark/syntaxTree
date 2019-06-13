@@ -4,7 +4,7 @@ import syntaxTree
 tree = syntaxTree.Tree()
 tree.setRoot("Root", True, True)
 tree.addNode("A", True, False).addSubText("cat")
-tree.addNode("B", False, False).addSubText("jumped")
+tree.addNode("T [+PAST]", False, False).addSubText("jumped")
 tree.addNode("C", False, False).addSubText("the")
 
 tree.draw()
