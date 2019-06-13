@@ -17,10 +17,10 @@ class Node():
     def __init__(self, parent, text, hasLeft, hasRight):
         self.parent = parent
         if parent != None:
-            if parent.hasRight and parent.right == None:
-                parent.right = self
-            elif parent.hasLeft and parent.left == None:
+            if parent.hasLeft and parent.left == None:
                 parent.left = self
+            elif parent.hasRight and parent.right == None:
+                parent.right = self
             else:
                 print("this shouldn't happen")
 
@@ -32,20 +32,20 @@ class Node():
         self.sub = sub
 
 def _getNext(node):
-    if node.hasRight:
-        if node.right == None:
-            return node
-
-        nextNode = _getNext(node.right)
-        if nextNode != None:
-            return nextNode
-        #else right be full
-    
     if node.hasLeft:
         if node.left == None:
             return node
 
         nextNode = _getNext(node.left)
+        if nextNode != None:
+            return nextNode
+        #else left be full
+
+    if node.hasRight:
+        if node.right == None:
+            return node
+
+        nextNode = _getNext(node.right)
         if nextNode != None:
             return nextNode
         #else both be full
@@ -83,11 +83,11 @@ class Tree():
     def addSubTree(self, subTree):
         nextNode = _getNext(self.root)
         subTree.root.parent = nextNode
-        
-        if nextNode.hasRight and nextNode.right == None:
-            nextNode.right = subTree.root
-        elif nextNode.hasLeft and nextNode.left == None:
+
+        if nextNode.hasLeft and nextNode.left == None:
             nextNode.left = subTree.root
+        elif nextNode.hasRight and nextNode.right == None:
+            nextNode.right = subTree.root
         else:
             print("this shouldn't happen")
 
