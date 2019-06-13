@@ -19,11 +19,11 @@ class Node():
         self.hasLeft = hasLeft
         self.hasRight = hasRight
 
-    def addSubText(self, subText):
-        self.subText = subText
+    def subText(self, sub):
+        self.sub = sub
 
     text = ""
-    subText = None
+    sub = None
     value = 0
     left = None
     right = None
@@ -134,18 +134,18 @@ class Tree():
         myfont = pygame.font.Font("AvenirLTStd-Book.otf", fontSize)
         title = myfont.render(node.text, 1, (0,0,0))
 
-        if node.subText == None:
+        if node.sub == None:
             width = 10 + myfont.size(node.text)[0]
             height = myfont.size(node.text)[1]
             textSurface = pygame.Surface((width, height))
             textSurface.fill([255,255,255])
         else:
-            width = 10 + max(myfont.size(node.text)[0], myfont.size(node.subText)[0])
-            height = fontSize + myfont.size(node.subText)[1]
+            width = 10 + max(myfont.size(node.text)[0], myfont.size(node.sub)[0])
+            height = fontSize + myfont.size(node.sub)[1]
             textSurface = pygame.Surface((width, height))
             textSurface.fill([255,255,255])
-            sub = myfont.render(node.subText, 1, (0,0,0))
-            textSurface.blit(sub, ((width - myfont.size(node.subText)[0])/2, fontSize))
+            sub = myfont.render(node.sub, 1, (0,0,0))
+            textSurface.blit(sub, ((width - myfont.size(node.sub)[0])/2, fontSize))
 
         textSurface.blit(title, ((width - myfont.size(node.text)[0])/2, 0))
 
@@ -155,13 +155,13 @@ class Tree():
             self._drawTree(node.right)
         # pygame.draw.circle(self.screen, [20,50,150], (node.x, node.y), 7)
 
-        if node.hasLeft == False:
-            label = myfont.render("x", 1, (0,0,0))
-            self.screen.blit(label, (node.x - 15, node.y + 2))
+        # if node.hasLeft == False:
+        #     label = myfont.render("x", 1, (0,0,0))
+        #     self.screen.blit(label, (node.x - 15, node.y + 2))
 
-        if node.hasRight == False:
-            label = myfont.render("x", 1, (0,0,0))
-            self.screen.blit(label, (node.x + 10, node.y + 2))
+        # if node.hasRight == False:
+        #     label = myfont.render("x", 1, (0,0,0))
+        #     self.screen.blit(label, (node.x + 10, node.y + 2))
 
         self.screen.blit(textSurface, (node.x - width/2, node.y - height/2))
 
@@ -187,14 +187,14 @@ class Tree():
 
         return done
 
-def quit(self):
+def quit():
     pygame.quit()
 
 
 if __name__ == "__main__":
     tree = Tree()
     tree.setRoot("The Root", True, True)
-    tree.addNode("A", False, False).addSubText("The Cat")
+    tree.addNode("A", False, False).subText("The Cat")
     tree.addNode("B", False, False)
     tree.draw()
 

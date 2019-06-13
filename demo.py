@@ -3,9 +3,9 @@ import syntaxTree
 
 tree = syntaxTree.Tree()
 tree.setRoot("Root", True, True)
-tree.addNode("A", True, False).addSubText("cat")
-tree.addNode("T [+PAST]", False, False).addSubText("jumped")
-tree.addNode("C", False, False).addSubText("the")
+tree.addNode("A", True, False).subText("cat")
+tree.addNode("T [+PAST]", False, False).subText("jumped")
+tree.addNode("C", False, False).subText("the")
 
 tree.draw()
 
@@ -15,3 +15,5 @@ while not done:
 	# if not tree.getComplete():
 	# 	tree.addNode("?", randint(0,1), randint(0,1))
 	# 	tree.draw()
+
+syntaxTree.quit()
