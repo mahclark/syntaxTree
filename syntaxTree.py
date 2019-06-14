@@ -22,14 +22,14 @@ class Node():
 			elif parent.hasRight and parent.right == None:
 				parent.right = self
 			else:
-				print("this shouldn't happen")
+				raise Exception("*** Parent has no available children slots ***")
 
-		self.text = text
+		self.text = str(text)
 		self.hasLeft = hasLeft
 		self.hasRight = hasRight
 
 	def subText(self, sub):
-		self.sub = sub
+		self.sub = str(sub)
 
 def _getNext(node):
 	if node.hasLeft:
@@ -77,7 +77,14 @@ class Tree():
 		return self.root
 
 	def addSubTree(self, subTree):
+		if self.root == None:
+			raise Exception("*** Must set root before adding subtree ***")
+			return
+
 		nextNode = _getNext(self.root)
+		if nextNode == None:
+			raise Exception("*** Cannot add subtree - tree is already complete ***")
+			return
 		subTree.root.parent = nextNode
 
 		if nextNode.hasLeft and nextNode.left == None:
@@ -85,20 +92,33 @@ class Tree():
 		elif nextNode.hasRight and nextNode.right == None:
 			nextNode.right = subTree.root
 		else:
-			print("this shouldn't happen")
+			raise Exception("*** Parent has no available children slots ***")
 
 		self.complete = _getNext(self.root) == None
 
 	def addNode(self, text, left, right):
+		if self.root == None:
+			raise Exception("*** Must set root before adding nodes ***")
+			return
+
 		nextNode = _getNext(self.root)
+		if nextNode == None:
+			raise Exception("*** Cannot add subtree - tree is already complete ***")
+			return
+
 		node = Node(nextNode, text, left, right)
 		self.complete = _getNext(self.root) == None
 		return node
 
 	def draw(self):
+		if self.root == None:
+			raise Exception("*** Must set root before drawing ***")
+			return
+
 		self._setPositions(self.root)
 		self.screen.fill([255,255,255])
 		self._drawTree(self.root)
+
 		pygame.display.flip()
 
 	def getComplete(self):
@@ -191,7 +211,8 @@ class Tree():
 			if event.type == pygame.VIDEORESIZE:
 				screen = pygame.display.set_mode(event.dict['size'], pygame.RESIZABLE)
 				self.xSize, self.ySize = event.dict['size']
-				self.draw()
+				if self.root != None:
+					self.draw()
 
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				mouseHold = True
