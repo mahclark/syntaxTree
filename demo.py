@@ -15,13 +15,13 @@ tree.addNode("T [+PAST]", False, False).subText("jumped")
 
 tree.addSubTree(stree)
 
-tree.draw()
+syntaxTree.run(tree, stree)
 
-done = False
-while not done:
-	done = tree.loop()
-	# if not tree.getComplete():
-	# 	tree.addNode("?", randint(0,1), randint(0,1))
-	# 	tree.draw()
+# done = False
+# while not done:
+# 	done = tree.loop()
+# 	# if not tree.getComplete():
+# 	# 	tree.addNode("?", randint(0,1), randint(0,1))
+# 	# 	tree.draw()
 
-syntaxTree.quit()
+# syntaxTree.quit()
