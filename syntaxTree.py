@@ -114,8 +114,8 @@ class Tree():
 	def _setTree(self, node):
 		if node == None: return
 		node.tree = self
-		_setTree(node.left)
-		_setTree(node.right)
+		self._setTree(node.left)
+		self._setTree(node.right)
 
 	def _draw(self, surf):
 		if self.root == None:
