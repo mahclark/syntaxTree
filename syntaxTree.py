@@ -6,6 +6,7 @@ from random import randint
 class Node():
 
 	parent = None
+	tree = None
 	text = ""
 	sub = None
 	value = 0
@@ -61,12 +62,18 @@ class Tree():
 
 	def setRoot(self, text, left, right):
 		self.root = Node(None, text, left, right)
+		self.root.tree = self
 		return self.root
 
 	def addSubTree(self, subTree):
 		if self.root == None:
 			raise Exception("*** Must set root before adding subtree ***")
 			return
+
+		if self != self.root.tree:
+			raise Exception("*** Cannot add to this subtree - add to the supertree ***")
+
+		self._setTree(subTree.root)
 
 		nextNode = _getNext(self.root)
 		if nextNode == None:
@@ -88,17 +95,27 @@ class Tree():
 			raise Exception("*** Must set root before adding nodes ***")
 			return
 
+		if self != self.root.tree:
+			raise Exception("*** Cannot add to this subtree - add to the supertree ***")
+
 		nextNode = _getNext(self.root)
 		if nextNode == None:
 			raise Exception("*** Cannot add subtree - tree is already complete ***")
 			return
 
 		node = Node(nextNode, text, left, right)
+		node.tree = self
 		self.complete = _getNext(self.root) == None
 		return node
 
 	def getComplete(self):
 		return self.complete
+
+	def _setTree(self, node):
+		if node == None: return
+		node.tree = self
+		_setTree(node.left)
+		_setTree(node.right)
 
 	def _draw(self, surf):
 		if self.root == None:
