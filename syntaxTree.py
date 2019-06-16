@@ -264,7 +264,10 @@ def tabController(names, selected):
 
 	return (back, btns, poss)
 
-def run(*args):
+def run(trees=[], timeOut=0):
+	if not isinstance(trees, list):
+		trees = [trees]
+
 	xSize, ySize = 600, 450
 	screen = pygame.display.set_mode((xSize, ySize), pygame.RESIZABLE)
 	pygame.display.set_caption("Tree")
@@ -273,16 +276,16 @@ def run(*args):
 	screen.fill([255,255,255])
 
 	selected = None
-	if len(args) > 0:
+	if len(trees) > 0:
 		selected = 0
 
-		tab, btns, btnsPos = tabController(["Tree {0}".format(i) for i in range(1, len(args) + 1)], selected)
-		if len(args) == 1:
+		tab, btns, btnsPos = tabController(["Tree {0}".format(i) for i in range(1, len(trees) + 1)], selected)
+		if len(trees) == 1:
 			tab = pygame.Surface((0,0))
 
 		treeSpace = pygame.Surface((xSize, ySize - tab.get_size()[1]))
 		treeSpace.fill([255,255,255])
-		treeSpace = args[selected]._draw(treeSpace)
+		treeSpace = trees[selected]._draw(treeSpace)
 
 		screen.blit(treeSpace, (0, tab.get_size()[1]))
 		tabPos = ((xSize - tab.get_size()[0])/2, 0)
@@ -310,11 +313,11 @@ def run(*args):
 				if selected != None:
 					treeSpace = pygame.Surface((xSize, ySize - tab.get_size()[1]))
 					treeSpace.fill([255,255,255])
-					treeSpace = args[selected]._draw(treeSpace)
+					treeSpace = trees[selected]._draw(treeSpace)
 
 					screen.blit(treeSpace, (0, tab.get_size()[1]))
 					tabPos = ((xSize - tab.get_size()[0])/2, 0)
-					if len(args) > 1: screen.blit(tab, tabPos)
+					if len(trees) > 1: screen.blit(tab, tabPos)
 
 
 			if event.type == pygame.MOUSEBUTTONDOWN:
@@ -328,16 +331,19 @@ def run(*args):
 						break
 
 				treeSpace.fill([255,255,255])
-				treeSpace = args[selected]._draw(treeSpace)
+				treeSpace = trees[selected]._draw(treeSpace)
 				screen.blit(treeSpace, (0, tab.get_size()[1]))
 
-				tab, btns, btnsPos = tabController(["Tree {0}".format(i) for i in range(1, len(args) + 1)], selected)
-				if len(args) == 1:
+				tab, btns, btnsPos = tabController(["Tree {0}".format(i) for i in range(1, len(trees) + 1)], selected)
+				if len(trees) == 1:
 					tab = pygame.Surface((0,0))
 				screen.blit(tab, tabPos)
 
 			if event.type == pygame.MOUSEBUTTONUP:
 				mouseHold = False
+
+		if timeOut > 0 and frameCount > timeOut:
+			done = True
 
 		pygame.display.flip()
 		clock.tick(60)
@@ -362,4 +368,4 @@ if __name__ == "__main__":
 	tree3 = Tree()
 	tree3.setRoot("Tree 3", False, False)
 
-	run(tree1, tree2, tree3)
+	run([tree1, tree2, tree3])
