@@ -63,6 +63,7 @@ class Tree():
 	def setRoot(self, text, left, right):
 		self.root = Node(None, text, left, right)
 		self.root.tree = self
+		self.complete = _getNext(self.root) == None
 		return self.root
 
 	def addSubTree(self, subTree):
