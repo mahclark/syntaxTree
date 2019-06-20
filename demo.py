@@ -15,4 +15,4 @@ tree.addNode("T [+PAST]", False, False).subText("jumped")
 
 tree.addSubTree(stree)
 
-syntaxTree.run(tree, 60)
+syntaxTree.run(tree, 600)

@@ -118,7 +118,7 @@ class Tree():
 		self._setTree(node.left)
 		self._setTree(node.right)
 
-	def _draw(self, surf):
+	def _draw(self, surf, dots):
 		if self.root == None:
 			raise Exception("*** Must set root before drawing ***")
 			return
@@ -126,7 +126,7 @@ class Tree():
 		self.xSize, self.ySize = surf.get_size()
 
 		self._setPositions(self.root)
-		surf = self._drawTree(self.root, surf)
+		surf = self._drawTree(self.root, surf, dots)
 
 		pygame.display.flip()
 
@@ -170,7 +170,7 @@ class Tree():
 	def _getY(self, level):
 		return 20 if self.depth == 0 else int((self.ySize - 40)*level/self.depth + 20)
 
-	def _drawTree(self, node, surf):
+	def _drawTree(self, node, surf, dots):
 		if node.parent != None:
 			pygame.draw.line(surf, [0,0,0], (node.x, node.y), (node.parent.x, node.parent.y), 2)
 
@@ -194,45 +194,20 @@ class Tree():
 		textSurface.blit(title, ((width - myfont.size(node.text)[0])/2, 0))
 
 		if node.left != None:
-			self._drawTree(node.left, surf)
+			self._drawTree(node.left, surf, dots)
 		if node.right != None:
-			self._drawTree(node.right, surf)
-		# pygame.draw.circle(self.screen, [20,50,150], (node.x, node.y), 7)
-
-		# if node.hasLeft == False:
-		#	 label = myfont.render("x", 1, (0,0,0))
-		#	 self.screen.blit(label, (node.x - 15, node.y + 2))
-
-		# if node.hasRight == False:
-		#	 label = myfont.render("x", 1, (0,0,0))
-		#	 self.screen.blit(label, (node.x + 10, node.y + 2))
+			self._drawTree(node.right, surf, dots)
 
 		surf.blit(textSurface, (node.x - width/2, node.y - height/2))
 
+		if dots:
+			if node.hasLeft == False:
+				pygame.draw.circle(surf, [220,50,30], (node.x - int(width/2), node.y + 10), 3)
+
+			if node.hasRight == False:
+				pygame.draw.circle(surf, [220,50,30], (node.x + int(width/2), node.y + 10), 3)
+
 		return surf
-
-	def loop(self):
-		self.frameCount += 1
-		done = False
-		mx, my = pygame.mouse.get_pos()
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				done = True
-			if event.type == pygame.VIDEORESIZE:
-				screen = pygame.display.set_mode(event.dict['size'], pygame.RESIZABLE)
-				self.xSize, self.ySize = event.dict['size']
-				if self.root != None:
-					self.draw()
-
-			if event.type == pygame.MOUSEBUTTONDOWN:
-				mouseHold = True
-			if event.type == pygame.MOUSEBUTTONUP:
-				mouseHold = False
-
-		pygame.display.flip()
-		self.clock.tick(60)
-
-		return done
 
 def quit():
 	pygame.quit()
@@ -265,7 +240,7 @@ def tabController(names, selected):
 
 	return (back, btns, poss)
 
-def run(trees=[], timeOut=0):
+def run(trees=[], timeOut=0, dots=True):
 	if not isinstance(trees, list):
 		trees = [trees]
 
@@ -286,13 +261,11 @@ def run(trees=[], timeOut=0):
 
 		treeSpace = pygame.Surface((xSize, ySize - tab.get_size()[1]))
 		treeSpace.fill([255,255,255])
-		treeSpace = trees[selected]._draw(treeSpace)
+		treeSpace = trees[selected]._draw(treeSpace, dots)
 
 		screen.blit(treeSpace, (0, tab.get_size()[1]))
 		tabPos = ((xSize - tab.get_size()[0])/2, 0)
 		screen.blit(tab, tabPos)
-
-	
 
 	#----------------------Main Loop----------------------#
 
@@ -314,7 +287,7 @@ def run(trees=[], timeOut=0):
 				if selected != None:
 					treeSpace = pygame.Surface((xSize, ySize - tab.get_size()[1]))
 					treeSpace.fill([255,255,255])
-					treeSpace = trees[selected]._draw(treeSpace)
+					treeSpace = trees[selected]._draw(treeSpace, dots)
 
 					screen.blit(treeSpace, (0, tab.get_size()[1]))
 					tabPos = ((xSize - tab.get_size()[0])/2, 0)
@@ -323,27 +296,28 @@ def run(trees=[], timeOut=0):
 
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				mouseHold = True
-				screen.fill([255,255,255])
 
 				for n, btn in enumerate(btns):
 					rect = pygame.Rect(tabPos[0] + btnsPos[n][0], tabPos[1] + btnsPos[n][1], btn.get_size()[0], btn.get_size()[1])
 					if rect.collidepoint(mx, my):
 						selected = n
+
+						screen.fill([255,255,255])
+						treeSpace.fill([255,255,255])
+						treeSpace = trees[selected]._draw(treeSpace, dots)
+						screen.blit(treeSpace, (0, tab.get_size()[1]))
+
+						tab, btns, btnsPos = tabController(["Tree {0}".format(i) for i in range(1, len(trees) + 1)], selected)
+						if len(trees) == 1:
+							tab = pygame.Surface((0,0))
+						screen.blit(tab, tabPos)
+
 						break
-
-				treeSpace.fill([255,255,255])
-				treeSpace = trees[selected]._draw(treeSpace)
-				screen.blit(treeSpace, (0, tab.get_size()[1]))
-
-				tab, btns, btnsPos = tabController(["Tree {0}".format(i) for i in range(1, len(trees) + 1)], selected)
-				if len(trees) == 1:
-					tab = pygame.Surface((0,0))
-				screen.blit(tab, tabPos)
 
 			if event.type == pygame.MOUSEBUTTONUP:
 				mouseHold = False
 
-		if timeOut > 0 and frameCount > timeOut:
+		if timeOut > 0 and frameCount > timeOut*60:
 			done = True
 
 		pygame.display.flip()
@@ -355,7 +329,7 @@ if __name__ == "__main__":
 	tree1 = Tree()
 	tree1.setRoot("Tree 1", True, True)
 	tree1.addNode("A", False, True)
-	tree1.addNode("B", False, False)
+	tree1.addNode("B", False, False).subText("Sub Text")
 	tree1.addNode("C", False, False)
 
 
@@ -369,4 +343,4 @@ if __name__ == "__main__":
 	tree3 = Tree()
 	tree3.setRoot("Tree 3", False, False)
 
-	run([tree1, tree2, tree3])
+	run([tree1, tree2, tree3], 60, False)
