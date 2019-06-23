@@ -1,4 +1,4 @@
-import syntaxTree
+from tree_generator import syntaxTree
 import spacy
 from spacy.matcher import Matcher
 
