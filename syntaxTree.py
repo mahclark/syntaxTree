@@ -1,5 +1,6 @@
 import pygame
 import time
+import os
 from math import sqrt
 from random import randint
 
@@ -175,7 +176,7 @@ class Tree():
 			pygame.draw.line(surf, [0,0,0], (node.x, node.y), (node.parent.x, node.parent.y), 2)
 
 		fontSize = 16
-		myfont = pygame.font.Font("AvenirLTStd-Book.otf", fontSize)
+		myfont = pygame.font.Font(os.path.dirname(os.path.realpath(__file__)) + "\\AvenirLTStd-Book.otf", fontSize)
 		title = myfont.render(node.text, 1, (0,0,0))
 
 		if node.sub == None:
@@ -219,7 +220,7 @@ def tabController(names, selected):
 	poss = []
 
 	totalWidth = pad
-	font = pygame.font.Font("AvenirLTStd-Book.otf", 20)
+	font = pygame.font.Font(os.path.dirname(os.path.realpath(__file__)) + "\\AvenirLTStd-Book.otf", 20)
 	for name in names:
 		totalWidth += font.size(name)[0] + 10 + pad
 
