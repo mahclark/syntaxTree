@@ -15,4 +15,7 @@ tree.addNode("T [+PAST]", False, False).subText("jumped")
 
 tree.addSubTree(stree)
 
-syntaxTree.run(tree, 600)
+syntaxTree.run(tree, 600, True)
+#				^	  ^		^display leafs (as dots)
+#				^     ^frames to timeout
+#               ^tree or list of trees
